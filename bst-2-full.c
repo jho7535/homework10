@@ -66,6 +66,7 @@ int main()
 		printf(" Recursive Inorder    = r      Iterative Inorder (Stack)    = t \n");
 		printf(" Level Order (Queue)  = l      Quit                         = q \n");
 		printf("----------------------------------------------------------------\n");
+		printf("%d\n", top);
 
 		printf("Command = ");
 		scanf(" %c", &command); // 명령어를 입력받아 command에 저장
@@ -155,45 +156,45 @@ void recursiveInorder(Node *ptr) // inorder - recursive 방식으로 트리를 �
 /**
  * textbook: p 224
  */
-void iterativeInorder(Node *node) // inorder - iterative 방식으로 트리를 출력하는 함수
+void iterativeInorder(Node *node) // stack을 이용하여 inorder 방식으로 트리를 출력하는 함수
 {
 	for (;;)
 	{
-		for (; node; node = node->left)
-			push(node);
-		node = pop();
+		for (; node; node = node->left) // node가 참일 동안 node에 왼쪽 포인터를 대입하면서 반복
+			push(node);					// node를 매개변수로 하여 push 함수 호출
+		node = pop();					// node에 pop함수 대입
 
-		if (!node)
+		if (!node) // node가 NULL이면
 			break;
-		printf(" [%d] ", node->key);
+		printf(" [%d] ", node->key); // 노드의 key 값 출력
 
-		node = node->right;
+		node = node->right; // node에 오른쪽 포인터 대입
 	}
 }
 
 /**
  * textbook: p 225
  */
-void levelOrder(Node *ptr)
+void levelOrder(Node *ptr) // Queue를 이용하여 levelOrder 방식으로 트리를 출력하는 함수
 {
 	// int front = rear = -1;
 
-	if (!ptr)
+	if (!ptr)	// ptr이 NULL인 경우
 		return; /* empty tree */
 
-	enQueue(ptr);
+	enQueue(ptr); // ptr을 매개변수로 하여 enQueue 함수 호출
 
 	for (;;)
 	{
-		ptr = deQueue();
-		if (ptr)
+		ptr = deQueue(); // ptr에 deQueue 함수 대입
+		if (ptr)		 // ptr이 참인 경우
 		{
-			printf(" [%d] ", ptr->key);
+			printf(" [%d] ", ptr->key); // ptr의 key 값 출력
 
-			if (ptr->left)
-				enQueue(ptr->left);
-			if (ptr->right)
-				enQueue(ptr->right);
+			if (ptr->left)			 // ptr의 왼쪽 노드가 참인 경우
+				enQueue(ptr->left);	 // ptr 왼쪽 포인터를 매개변수로 하여 enQueue 함수 호출
+			if (ptr->right)			 // ptr의 오른쪽 노드가 참인 경우
+				enQueue(ptr->right); // ptr 오른쪽 포인터를 매개변수로 하여 enQueue 함수 호출
 		}
 		else
 			break;
@@ -266,76 +267,76 @@ int deleteNode(Node *head, int key) // 해당하는 key 값인 노드를 제거�
 	Node *parent = NULL; // 노드 포인터 parent를 선언하고 NULL로 초기화
 	Node *ptr = root;	 // 노드 포인터 ptr을 선언하고 root로 초기화
 
-	while ((ptr != NULL) && (ptr->key != key))
+	while ((ptr != NULL) && (ptr->key != key)) // ptr이 NULL이 아니고 ptr의 key 값이 입력 받은 key 값과 다른 동안
 	{
-		if (ptr->key != key)
+		if (ptr->key != key) // ptr의 key 값과 입력 받은 key 값이 다른 경우
 		{
 
 			parent = ptr; /* save the parent */
 
-			if (ptr->key > key)
-				ptr = ptr->left;
-			else
-				ptr = ptr->right;
+			if (ptr->key > key)	  // ptr의 key 값이 입력 받은 key 값보다 큰 경우
+				ptr = ptr->left;  // ptr에 왼쪽 포인터 대입
+			else				  // ptr의 key 값이 입력 받은 key 값보다 작은 경우
+				ptr = ptr->right; // ptr에 오른쪽 포인터 대입
 		}
 	}
 
 	/* there is no node for the key */
-	if (ptr == NULL)
+	if (ptr == NULL) // ptr이 NULL인 경우
 	{
-		printf("No node for key [%d]\n ", key);
+		printf("No node for key [%d]\n ", key); // key 값에 해당 하는 노드가 없음을 출력
 		return -1;
 	}
 
 	/*
 	 * case 1: the node which has to be removed is a leaf node
 	 */
-	if (ptr->left == NULL && ptr->right == NULL)
+	if (ptr->left == NULL && ptr->right == NULL) // ptr의 두 포인터 모두 NULL인 경우
 	{
-		if (parent != NULL)
-		{ /* parent exists, parent's left and right links are adjusted */
-			if (parent->left == ptr)
-				parent->left = NULL;
-			else
-				parent->right = NULL;
+		if (parent != NULL)			  // parent가 NULL이 아닌 경우
+		{							  /* parent exists, parent's left and right links are adjusted */
+			if (parent->left == ptr)  // parent의 왼쪽 포인터가 ptr인 경우
+				parent->left = NULL;  // parent의 왼쪽 포인터에 NULL 대입
+			else					  // parent의 오른쪽 포인터가 ptr인 경우
+				parent->right = NULL; // parent의 오른쪽 포인터에 NULL 대입
 		}
-		else
+		else // parent가 NULL인 경우
 		{
 			/* parent is null, which means the node to be deleted is the root */
-			head->left = NULL;
+			head->left = NULL; // head의 왼쪽 포인터에 NULL 대입
 		}
 
-		free(ptr);
+		free(ptr); // ptr 메모리 해제
 		return 1;
 	}
 
 	/**
 	 * case 2: if the node to be deleted has one child
 	 */
-	if ((ptr->left == NULL || ptr->right == NULL))
+	if ((ptr->left == NULL || ptr->right == NULL)) // ptr의 둘 중 하나의 포인터가 NULL인 경우
 	{
-		Node *child;
-		if (ptr->left != NULL)
-			child = ptr->left;
-		else
-			child = ptr->right;
+		Node *child;			// 노드 포인터 child를 선언
+		if (ptr->left != NULL)	// ptr의 왼쪽 포인터가 NULL이 아닌 경우
+			child = ptr->left;	// child에 ptr의 왼쪽 포인터 대입
+		else					// ptr의 왼쪽 포인터가 NULL인 경우
+			child = ptr->right; // child에 ptr의 오른쪽 포인터 대입
 
-		if (parent != NULL)
+		if (parent != NULL) // parent가 NULL이 아닌 경우
 		{
-			if (parent->left == ptr)
-				parent->left = child;
-			else
-				parent->right = child;
+			if (parent->left == ptr)   // parent의 왼쪽 포인터가 ptr인 경우
+				parent->left = child;  // parent의 왼쪽 포인터에 child 대입
+			else					   // parent의 왼쪽 포인터가 ptr이 아닌 경우
+				parent->right = child; // parent의 오른쪽 포인터에 child 대입
 		}
-		else
+		else // parent가 NULL인 경우
 		{
 			/* parent is null, which means the node to be deleted is the root
 			 * and the root has one child. Therefore, the child should be the root
 			 */
-			root = child;
+			root = child; // root에 child 대입
 		}
 
-		free(ptr);
+		free(ptr); // ptr 메모리 해제
 		return 1;
 	}
 
@@ -349,76 +350,76 @@ int deleteNode(Node *head, int key) // 해당하는 key 값인 노드를 제거�
 	 *
 	 */
 
-	Node *candidate;
-	parent = ptr;
+	Node *candidate; // 노드 포인터 candidate를 선언
+	parent = ptr;	 // parent에 ptr 대입
 
-	candidate = ptr->right;
+	candidate = ptr->right; // candidate에 ptr의 오른쪽 포인터 대입
 
 	/* the smallest node is left deepest node in the right subtree of the ptr */
-	while (candidate->left != NULL)
+	while (candidate->left != NULL) // candidate의 왼쪽 포인터가 NULL이 아닐 동안
 	{
-		parent = candidate;
-		candidate = candidate->left;
+		parent = candidate;			 // parent에 candidate 대입
+		candidate = candidate->left; // candidate에 왼쪽 포인터 대입
 	}
 
 	/* the candidate node is the right node which has to be deleted.
 	 * note that candidate's left is null
 	 */
-	if (parent->right == candidate)
-		parent->right = candidate->right;
-	else
-		parent->left = candidate->right;
+	if (parent->right == candidate)		  // parent의 오른쪽 포인터가 candidate인 경우
+		parent->right = candidate->right; // parent의 오른쪽 포인터에 candidate의 오른쪽 포인터 대입
+	else								  // parent의 오른쪽 포인터가 candidate가 아닌 경우
+		parent->left = candidate->right;  // parent의 왼쪽 포인터에 candidate의 오른쪽 포인터 대입
 
 	/* instead of removing ptr, we just change the key of ptr
 	 * with the key of candidate node and remove the candidate node
 	 */
 
-	ptr->key = candidate->key;
+	ptr->key = candidate->key; // ptr의 key 값에 candidate의 key 값 대입
 
-	free(candidate);
+	free(candidate); // candidate 메모리 해제
 	return 1;
 }
 
-void freeNode(Node *ptr)
+void freeNode(Node *ptr) // 노드 메모리 해제하는 함수
 {
-	if (ptr)
+	if (ptr) // ptr이 참이면 (NULL이 아님)
 	{
-		freeNode(ptr->left);
-		freeNode(ptr->right);
-		free(ptr);
+		freeNode(ptr->left);  // ptr의 왼쪽 포인터를 매개변수로 하는 함수 재호출
+		freeNode(ptr->right); // ptr의 오른쪽 포인터를 매개변수로 하는 함수 재호출
+		free(ptr);			  // ptr 메모리 해제
 	}
 }
 
-int freeBST(Node *head)
+int freeBST(Node *head) // 이진 트리의 모든 노드 메모리 해제하는 함수
 {
 
-	if (head->left == head)
+	if (head->left == head) // 헤드 노드의 왼쪽 포인터가 헤드 노드인 경우
 	{
-		free(head);
+		free(head); // 헤드 노드 메모리 해제
 		return 1;
 	}
 
-	Node *p = head->left;
+	Node *p = head->left; // 노드 포인터 p 선언하고 헤드 노드의 왼쪽 포인터로 초기화
 
-	freeNode(p);
+	freeNode(p); // p를 매개변수로 하는 freeNode 함수 호출
 
-	free(head);
+	free(head); // 헤드 노드 메모리 해제
 	return 1;
 }
 
-Node *pop()
+Node *pop() // stack에서 pop 함수
 {
-	if (top < 0)
-		return NULL;
-	return stack[top--];
+	if (top < 0)		 // top이 0보다 작은 경우
+		return NULL;	 // NULL 리턴
+	return stack[top--]; // stack[top]을 리턴하고 top에 --연산
 }
 
-void push(Node *aNode)
+void push(Node *aNode) // stack에서 push 함수
 {
-	stack[++top] = aNode;
+	stack[++top] = aNode; // top에 ++연산하고 stack[top]에 aNode 대입
 }
 
-void printStack()
+void printStack() // top 값이 -1에서 변하지 않음. while문에서 조건식의 변수가 변화가 없어 일정함 (무한 루프)
 {
 	int i = 0;
 	printf("--- stack ---\n");
@@ -428,26 +429,26 @@ void printStack()
 	}
 }
 
-Node *deQueue()
+Node *deQueue() // Queue에서 deQueue 함수
 {
-	if (front == rear)
+	if (front == rear) // front와 rear가 같은 경우
 	{
 		// printf("\n....Now Queue is empty!!\n" );
 		return NULL;
 	}
 
-	front = (front + 1) % MAX_QUEUE_SIZE;
-	return queue[front];
+	front = (front + 1) % MAX_QUEUE_SIZE; // front에 front + 1 를 MAX_QUEUE_SIZE로 나눈 나머지 대입
+	return queue[front];				  // queue[front]를 반환
 }
 
-void enQueue(Node *aNode)
+void enQueue(Node *aNode) // Queue에서 enQueue 함수
 {
-	rear = (rear + 1) % MAX_QUEUE_SIZE;
-	if (front == rear)
+	rear = (rear + 1) % MAX_QUEUE_SIZE; // rear에 rear + 1 를 MAX_QUEUE_SIZE로 나눈 나머지 대입
+	if (front == rear)					// front와 rear가 같은 경우
 	{
 		// printf("\n....Now Queue is full!!\n");
 		return;
 	}
 
-	queue[rear] = aNode;
+	queue[rear] = aNode; // queue[rear]에 aNode 대입
 }
