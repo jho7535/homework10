@@ -66,7 +66,6 @@ int main()
 		printf(" Recursive Inorder    = r      Iterative Inorder (Stack)    = t \n");
 		printf(" Level Order (Queue)  = l      Quit                         = q \n");
 		printf("----------------------------------------------------------------\n");
-		printf("%d\n", top);
 
 		printf("Command = ");
 		scanf(" %c", &command); // 명령어를 입력받아 command에 저장
